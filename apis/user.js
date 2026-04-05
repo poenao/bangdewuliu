@@ -12,6 +12,10 @@ export const loginAPI = (data) => {
   })
 }
 
+/**
+ * 获取用户列表
+ * @returns {Promise} 返回一个 Promise 对象，包含用户列表数据
+ */
 export const usersAPI = () => {
   return fetch({
     url: '/driver/users',

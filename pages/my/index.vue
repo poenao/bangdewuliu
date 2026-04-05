@@ -1,12 +1,28 @@
-<script setup></script>
+<script setup>
+  import { ref } from 'vue'
+  import { usersAPI } from '../../apis/user'
+  import { onLoad } from '@dcloudio/uni-app'
+  // 个人信息数据
+  const userPrfile = ref({})
+  const getUserProfile = async () => {
+    const res = await usersAPI()
+    console.log(res)
+    if (res.code === 200) {
+      userPrfile.value = res.data
+    }
+  }
+  onLoad(() => {
+    getUserProfile()
+  })
+</script>
 
 <template>
   <view class="page-container">
     <view class="user-profile">
-      <image class="avatar" src="/static/images/avatar_2.png" mode=""></image>
-      <text class="username">李明</text>
-      <text class="no">司机编号：67409881</text>
-      <text class="mobile">手机号码：177 9998 8765</text>
+      <image class="avatar" :src="userPrfile.avatar" mode=""></image>
+      <text class="username">{{ userPrfile.name }}</text>
+      <text class="no">司机编号：{{ userPrfile.number }}</text>
+      <text class="mobile">手机号码：{{ userPrfile.phone }}</text>
     </view>
     <view class="month-overview">
       <view class="title">我的任务</view>
