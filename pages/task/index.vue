@@ -4,7 +4,7 @@
   import slPickup from './components/pickup.vue'
   import slDelivery from './components/delivery.vue'
   import slComplete from './components/complete.vue'
-
+  import  {fetch} from '@/apis/uni-fetch'
   // 标签页索引
   const tabIndex = ref(0)
   const tabMetas = reactive([
@@ -27,6 +27,11 @@
     tabMetas[index].rendered = true
     tabIndex.value = index
   }
+  fetch({
+    url: '/driver/tasks/list',
+  }).then((res) => {
+    if (res.statusCode !== 200) return uni.utils.toast()
+  })
 </script>
 
 <template>

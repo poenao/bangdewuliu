@@ -1,5 +1,5 @@
 import App from './App'
-
+import '@/utils/utils'
 // #ifndef VUE3
 import Vue from 'vue'
 import './uni.promisify.adaptor'
