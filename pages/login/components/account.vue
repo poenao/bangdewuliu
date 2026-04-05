@@ -4,7 +4,6 @@
     ref="form"
     :model="formData"
     :rules="accountRules"
-    validateTrigger="bind"
   >
     <uni-forms-item name="account">
       <uni-easyinput
@@ -30,6 +29,8 @@
 
 <script setup>
   import { ref, reactive } from 'vue'
+  import { loginAPI } from '../../../apis/user'
+  import { useUserStore } from '../../../stores/user'
 
   const form = ref(null)
 
@@ -55,15 +56,20 @@
   })
 
   // 提交校验
-  const onSubmit = () => {
-    form.value
-      .validate()
-      .then((res) => {
-        console.log('校验通过：', res)
-      })
-      .catch((err) => {
-        console.log('校验失败：', err)
-      })
+  const onSubmit = async () => {
+    try {
+      await form.value.validate()
+      // 校验通过，执行登录逻辑
+      const res = await loginAPI(formData)
+      console.log(res.data.code)
+      // 检测接口是否调用成功
+      if (res.data.code !== 200) return uni.utils.toast('登录失败，请重试！')
+      const store = useUserStore()
+      store.token = res.data.data
+    } catch (error) {
+      // 校验失败，错误信息会在表单项下方显示
+      console.error('登录失败', error)
+    }
   }
 </script>
 
