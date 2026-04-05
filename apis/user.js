@@ -11,3 +11,10 @@ export const loginAPI = (data) => {
     data,
   })
 }
+
+export const usersAPI = () => {
+  return fetch({
+    url: '/driver/users',
+    method: 'GET',
+  })
+}

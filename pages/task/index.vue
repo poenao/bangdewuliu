@@ -1,10 +1,10 @@
 <script setup>
-  import { ref, reactive } from 'vue'
+  import { ref, reactive, onMounted } from 'vue'
 
   import slPickup from './components/pickup.vue'
   import slDelivery from './components/delivery.vue'
   import slComplete from './components/complete.vue'
-  import  {fetch} from '@/apis/uni-fetch'
+  import { usersAPI } from '@/apis/user'
   // 标签页索引
   const tabIndex = ref(0)
   const tabMetas = reactive([
@@ -27,10 +27,13 @@
     tabMetas[index].rendered = true
     tabIndex.value = index
   }
-  fetch({
-    url: '/driver/tasks/list',
-  }).then((res) => {
-    if (res.statusCode !== 200) return uni.utils.toast()
+  const getUserInfo = async () => {
+    const res = await usersAPI()
+    console.log(res)
+  }
+
+  onMounted(() => {
+    getUserInfo()
   })
 </script>
 

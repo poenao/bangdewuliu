@@ -9,25 +9,22 @@ export const fetch = createUniFetch({
   intercept: {
     // 请求拦截器
     request(options) {
-      // 1. 获取 Pinia 中的用户 store
       const userState = useUserStore()
-
-      // 2. 定义默认请求头，携带 token
+      // 设置默认请求头，包含 token，后续用户传入的请求头会覆盖默认请求头
       const defaultHeaders = {
         Authorization: userState.token,
       }
-
-      // 3. 合并请求头
+      // 将默认请求头和用户传入的请求头合并，用户传入的请求头会覆盖默认请求头
       options.header = Object.assign({}, defaultHeaders, options.header)
-
-      // 4. 返回修改后的配置
       return options
     },
     // 响应拦截器
-    response({ data }) {
-      // 后续补充实际逻辑
-      // 过滤多余数据，直接返回接口需要的数据
-
+    response({ statusCode, data }) {
+      if (statusCode === 401) {
+        // 401 状态码表示未授权，可能是 token 无效或过期
+        // 跳转登录页
+        uni.redirectTo({ url: '/pages/login/index' })
+      }
       return data
     },
   },
