@@ -22,3 +22,28 @@ export const usersAPI = () => {
     method: 'GET',
   })
 }
+
+/**
+ * 任务数据
+ * @param {string} year - 任务数据的年份
+ * @param {string} month - 任务数据的月份
+ */
+
+export const taskDataAPI = (year, month) => {
+  return fetch({
+    url: '/driver/users/taskReport',
+    method: 'GET',
+    data: { year, month },
+  })
+}
+
+/**
+ * 车辆信息
+ */
+
+export const truckAPI = () => {
+  return fetch({
+    url: '/driver/users/truck',
+    method: 'GET',
+  })
+}

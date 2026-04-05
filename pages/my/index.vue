@@ -1,18 +1,26 @@
 <script setup>
   import { ref } from 'vue'
-  import { usersAPI } from '../../apis/user'
+  import { taskDataAPI, usersAPI } from '../../apis/user'
   import { onLoad } from '@dcloudio/uni-app'
   // 个人信息数据
   const userPrfile = ref({})
   const getUserProfile = async () => {
     const res = await usersAPI()
-    console.log(res)
     if (res.code === 200) {
       userPrfile.value = res.data
     }
   }
+  // 任务数据
+  const taskData = ref({})
+  const getTaskData = async () => {
+    const res = await taskDataAPI('2022', '07')
+    if (res.code === 200) {
+      taskData.value = res.data
+    }
+  }
   onLoad(() => {
     getUserProfile()
+    getTaskData()
   })
 </script>
 
