@@ -1,16 +1,27 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  // 定义一个方法来修改状态
-  const increment = () => {
-    count.value++
-  }
+export const useCounterStore = defineStore(
+  'counter',
+  () => {
+    // 状态数据（相当于 state）
+    const count = ref(0)
 
-  const decrement = () => {
-    count.value--
-  }
+    // 定义方法（相当于 actions）
+    const increment = () => {
+      count.value++
+    }
 
-  return { count, increment, decrement }
-})
+    const decrement = () => {
+      count.value--
+    }
+
+    // 一定要将定义的数据和方法返回
+    return { count, increment, decrement }
+  },
+  {
+    persist: {
+      paths: true,
+    },
+  }
+)
