@@ -1,9 +1,12 @@
-<script setup></script>
+<script setup>
+  import { useCounterStore } from '@/stores/counter'
+  const store = useCounterStore()
+</script>
 <template>
   <view class="counter">
-    <button class="button" type="primary">-</button>
-    <input class="input" type="text" />
-    <button class="button" type="primary">+</button>
+    <button class="button" type="primary" @click="store.decrement">-</button>
+    <input class="input" type="text" v-model="store.count" />
+    <button class="button" type="primary" @click="store.increment">+</button>
   </view>
 </template>
 
