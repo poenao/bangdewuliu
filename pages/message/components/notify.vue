@@ -10,25 +10,34 @@
   const pageSize = ref(10)
   // 是否为空列表
   const isEmpty = ref(false)
-  // 记录每次滚动页码
-  const scrollPage = ref(1)
-  const getNotifyList = async (page = 1, pageSize = 10) => {
-    const res = await messageListAPI(201, page, pageSize)
+  // 数据总条数
+  const counts = ref(0)
+  const getNotifyList = async () => {
+    const res = await messageListAPI(201, page.value, pageSize.value)
     console.log(res)
-    if (res.code !== 200) return uni.utils.toast('获取消息列表失败')
+
     // 更新任务列表数据
-    notifyList.value.push(...res.data.items)
+    // 如果后端返回 null，就用 [] 代替，避免 ... 展开报错
+    const items = res.data.items || []
+    notifyList.value.push(...items)
     // 是否为空列表
     isEmpty.value = notifyList.value.length === 0
-    // 记录每次滚动到底部的页码
-    scrollPage.value = page.value
+    // 更新数据总条数
+    counts.value = res.data.counts
   }
   // 监听用户是否滚动到页码底部
   const onScrollToLower = () => {
-    // 如果是空列表则不请求下一页数据
+    // 1. 如果已经标记为加载完毕，直接拦截
     if (isEmpty.value) return
-    // 请求下一页数据
-    getNotifyList(scrollPage.value, pageSize.value)
+
+    // 2. 正确逻辑：当前长度 小于 总数，才请求下一页
+    if (notifyList.value.length < counts.value) {
+      page.value++
+      getNotifyList()
+    } else {
+      // 3. 否则说明拿够了，标记为已完成
+      uni.utils.toast('没有更多了')
+    }
   }
   onMounted(() => {
     getNotifyList()
@@ -61,7 +70,7 @@
           <view class="title unread">您有新的运输任务</view>
         </template>
       </uni-card>
-      <view v-if="false" class="message-blank">暂无消息</view>
+      <view v-if="isEmpty" class="message-blank">暂无消息</view>
     </view>
   </scroll-view>
 </template>
