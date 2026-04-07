@@ -12,7 +12,11 @@
   const isEmpty = ref(false)
   // 数据总条数
   const counts = ref(0)
+  // 是否正在加载数据
+  const isLoading = ref(false)
   const getNotifyList = async () => {
+    if (isLoading.value) return
+    isLoading.value = true
     const res = await messageListAPI(201, page.value, pageSize.value)
     console.log(res)
 
@@ -24,12 +28,12 @@
     isEmpty.value = notifyList.value.length === 0
     // 更新数据总条数
     counts.value = res.data.counts
+    isLoading.value = false
   }
   // 监听用户是否滚动到页码底部
   const onScrollToLower = () => {
-    // 1. 如果已经标记为加载完毕，直接拦截
-    if (isEmpty.value) return
-
+    // 1. 控制转圈圈的变量（如果你定义了的话）
+    isTriggered.value = true
     // 2. 正确逻辑：当前长度 小于 总数，才请求下一页
     if (notifyList.value.length < counts.value) {
       page.value++
@@ -38,6 +42,20 @@
       // 3. 否则说明拿够了，标记为已完成
       uni.utils.toast('没有更多了')
     }
+  }
+  // 监听用户下拉刷新
+  const isTriggered = ref(false)
+  const onRefresh = async () => {
+    isTriggered.value = true
+    console.log('用户下拉刷新了')
+    // 1. 重置页码
+    page.value = 1
+    // 数据清空
+    notifyList.value = []
+    // 2. 重新请求数据
+    await getNotifyList()
+    isTriggered.value = false
+    console.log('结束刷新')
   }
   onMounted(() => {
     getNotifyList()
@@ -49,6 +67,8 @@
     refresher-enabled
     scroll-y
     @scrolltolower="onScrollToLower"
+    :refresher-triggered="isTriggered"
+    @refresherrefresh="onRefresh"
   >
     <view class="scroll-view-wrapper">
       <view class="message-action">
