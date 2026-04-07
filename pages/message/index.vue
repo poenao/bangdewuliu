@@ -18,7 +18,9 @@
   ])
   // 切换标签页
   function onTabChange(index) {
+    // 只有第一次切换到该标签页时才渲染组件
     tabMetas[index].rendered = true
+    // 更新标签页索引
     tabIndex.value = index
   }
 </script>
